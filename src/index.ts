@@ -46,7 +46,7 @@ export class MyMCP extends McpAgent {
           // Take a random 8-character slice from the full randomness string
           const randomHex = data.randomness;
           const startIndex = Math.floor(Math.random() * (randomHex.length - 8));
-          const randomValue = parseInt(
+          const randomValue = Number.parseInt(
             randomHex.slice(startIndex, startIndex + 8),
             16
           );
