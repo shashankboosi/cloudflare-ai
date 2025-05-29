@@ -115,6 +115,143 @@ export class MyMCP extends McpAgent {
         return { content: [{ type: "text", text: String(result) }] };
       }
     );
+
+    this.server.tool(
+      "storeValue",
+      "Store a simple key-value pair in Cloudflare KV",
+      {
+        key: z.string().describe("Key to store the value under"),
+        value: z.string().describe("Value to store"),
+      },
+      async ({ key, value }) => {
+        try {
+          await this.env.TODO_STORE.put(key, value);
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: "Value stored successfully",
+              },
+            ],
+          };
+        } catch (error: any) {
+          throw new Error(`Failed to store value: ${error}`);
+        }
+      }
+    );
+
+    // Add Todo tool
+    this.server.tool(
+      "addTodo",
+      "Add a new task to your todo list",
+      {
+        task: z.string().describe("Task description to add to your todo list"),
+      },
+      async ({ task }) => {
+        try {
+          // Store task in KV with the task description as the key
+          await this.env.TODO_STORE.put(
+            task,
+            JSON.stringify({
+              completed: false,
+              createdAt: new Date().toISOString(),
+            })
+          );
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: `✅ Added task: "${task}"`,
+              },
+            ],
+          };
+        } catch (error) {
+          return {
+            content: [{ type: "text", text: `Error adding task: ${error}` }],
+          };
+        }
+      }
+    );
+
+    // List Todos tool
+    this.server.tool(
+      "listTodos",
+      "List all tasks in your todo list",
+      {},
+      async (_) => {
+        try {
+          const { keys } = await this.env.TODO_STORE.list();
+
+          if (keys.length === 0) {
+            return {
+              content: [
+                { type: "text", text: "No tasks found in your todo list" },
+              ],
+            };
+          }
+
+          const values = await this.env.TODO_STORE.get(keys.map((k) => k.name));
+
+          const obj = Object.fromEntries(values);
+          const jsonString = JSON.stringify(obj, null, 2);
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: jsonString,
+              },
+            ],
+          };
+        } catch (error) {
+          return {
+            content: [{ type: "text", text: `Error listing tasks: ${error}` }],
+          };
+        }
+      }
+    );
+
+    // Complete Todo tool
+    this.server.tool(
+      "completeTodo",
+      "Mark a task as completed in your todo list",
+      {
+        task: z.string().describe("The task to mark as completed"),
+      },
+      async ({ task }) => {
+        try {
+          // Check if task exists
+          const taskData = await this.env.TODO_STORE.get(task, "json");
+
+          if (!taskData) {
+            return {
+              content: [{ type: "text", text: `Task "${task}" not found` }],
+            };
+          }
+
+          // Mark as completed
+          taskData.completed = true;
+          await this.env.TODO_STORE.put(task, JSON.stringify(taskData));
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: `✅ Marked task "${task}" as completed`,
+              },
+            ],
+          };
+        } catch (error) {
+          return {
+            content: [
+              { type: "text", text: `Error completing task: ${error}` },
+            ],
+          };
+        }
+      }
+    );
   }
 }
 
