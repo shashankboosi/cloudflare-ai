@@ -5,15 +5,21 @@ import { z } from "zod";
 // Define our MCP agent with tools
 export class MyMCP extends McpAgent {
   server = new McpServer({
-    name: "Authless Calculator",
+    name: "AI to the World - MCP",
     version: "1.0.0",
+    description:
+      "A collection of useful tools including a true random number generator powered by drand",
   });
 
   async init() {
     // Simple addition tool
     this.server.tool(
       "add",
-      { a: z.number(), b: z.number() },
+      "Simple addition of two numbers",
+      {
+        a: z.number().describe("First number to add"),
+        b: z.number().describe("Second number to add"),
+      },
       async ({ a, b }) => ({
         content: [{ type: "text", text: String(a + b) }],
       })
@@ -22,7 +28,11 @@ export class MyMCP extends McpAgent {
     // Random number tool
     this.server.tool(
       "randomNumber",
-      { a: z.number(), b: z.number() },
+      "Generate a truly random number using Cloudflare's drand service",
+      {
+        a: z.number().describe("Minimum value (inclusive)"),
+        b: z.number().describe("Maximum value (inclusive)"),
+      },
       async ({ a, b }) => {
         try {
           // Get true randomness from drand Cloudflare endpoint
@@ -69,10 +79,13 @@ export class MyMCP extends McpAgent {
     // Calculator tool with multiple operations
     this.server.tool(
       "calculate",
+      "Perform various mathematical operations on two numbers",
       {
-        operation: z.enum(["add", "subtract", "multiply", "divide"]),
-        a: z.number(),
-        b: z.number(),
+        operation: z
+          .enum(["add", "subtract", "multiply", "divide"])
+          .describe("Mathematical operation to perform"),
+        a: z.number().describe("First operand"),
+        b: z.number().describe("Second operand"),
       },
       async ({ operation, a, b }) => {
         let result: number;
