@@ -1,2 +1,3 @@
-# cloudflare-ai
-Build an AI powered application using cloudflare and agents
+# Cloudflare
+
+This repository contains the code to create an MCP server and deploy it on Cloudflare
