@@ -19,18 +19,51 @@ export class MyMCP extends McpAgent {
       })
     );
 
-    // Ramdom number
+    // Random number tool
     this.server.tool(
       "randomNumber",
       { a: z.number(), b: z.number() },
-      async ({ a, b }) => ({
-        content: [
-          {
-            type: "text",
-            text: String(Math.floor(Math.random() * (b - a + 1)) + a),
-          },
-        ],
-      })
+      async ({ a, b }) => {
+        try {
+          // Get true randomness from drand Cloudflare endpoint
+          const response = await fetch(
+            "https://drand.cloudflare.com/public/latest"
+          );
+          const data = await response.json();
+          console.log("Data", data);
+
+          // Use the randomness value as seed
+          // Take a random 8-character slice from the full randomness string
+          const randomHex = data.randomness;
+          const startIndex = Math.floor(Math.random() * (randomHex.length - 8));
+          const randomValue = parseInt(
+            randomHex.slice(startIndex, startIndex + 8),
+            16
+          );
+
+          // Scale to the requested range
+          const scaledRandom = (Math.abs(randomValue) % (b - a + 1)) + a;
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: String(scaledRandom),
+              },
+            ],
+          };
+        } catch (error) {
+          // Fallback to Math.random if fetch fails
+          return {
+            content: [
+              {
+                type: "text",
+                text: String(Math.floor(Math.random() * (b - a + 1)) + a),
+              },
+            ],
+          };
+        }
+      }
     );
 
     // Calculator tool with multiple operations
