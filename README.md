@@ -14,22 +14,22 @@ A Cloudflare account for deployments
 
 1. Create a new MCP Server using the Cloudflare template
 
-```bash
-npm create cloudflare@latest -- my-mcp-server --template=cloudflare/ai/demos/remote-mcp-authless
-```
+   ```bash
+   npm create cloudflare@latest -- my-mcp-server --template=cloudflare/ai/demos/remote-mcp-authless
+   ```
 
 2. Navigate to the project directory
 
-```bash
-cd my-mcp-server
-```
+   ```bash
+   cd my-mcp-server
+   ```
 
 3. Run this MCP Server locally
    You can start your MCP Server by running the following command:
 
-```bash
-npm start
-```
+   ```bash
+   npm start
+   ```
 
 ## Testing
 
@@ -39,3 +39,10 @@ To test your MCP Server, you can use the MCP inspector:
 ```bash
 npx @modelcontextprotocol/inspector
 ```
+
+You will see the inspector with all the tools as seen below
+
+![MCP Inspector Screenshot](images/mcp_inspector.png)
+
+You can also use [cloudflare playground](https://playground.ai.cloudflare.com/) which is a platform provided by cloudflare to connect 
+an MCP server
