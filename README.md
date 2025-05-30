@@ -6,9 +6,9 @@ This repository contains the code to create an MCP server and deploy it on Cloud
 
 Before starting this workshop, please ensure you have the following installed:
 
-Node.js (version 18 or later) - Download
-Wrangler CLI - Install with `npm install -g wrangler`
-A Cloudflare account for deployments
+- Node.js (version 18 or later) - Download
+- Wrangler CLI - Install with `npm install -g wrangler`
+- A Cloudflare account for deployments
 
 ## Getting started
 
@@ -46,3 +46,15 @@ You will see the inspector with all the tools as seen below
 
 You can also use [cloudflare playground](https://playground.ai.cloudflare.com/) which is a platform provided by cloudflare to connect 
 an MCP server
+
+## Deploying
+
+You can deploy this server to cloudflare workers with a single command, the first time you might 
+be needed to establish a connection to workers via wrangler but it is straight forward
+
+```bash
+   npm run deploy
+```
+
+This will deploy your MCP server to a Cloudflare Workers URL like:
+`https://my-mcp-server.<your-account>.workers.dev/sse`
