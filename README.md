@@ -1,6 +1,6 @@
-# Cloudflare
+# Cloudflare MCP
 
-This repository contains the code to create an MCP server and deploy it on Cloudflare
+This repository contains the code to create an MCP server and deploy it on Cloudflare workers
 
 ## Pre-requisites
 
@@ -58,3 +58,7 @@ be needed to establish a connection to workers via wrangler but it is straight f
 
 This will deploy your MCP server to a Cloudflare Workers URL like:
 `https://my-mcp-server.<your-account>.workers.dev/sse`
+
+## Credits
+
+Thanks to [Ricky Robinett](https://github.com/rickyrobinett) from Cloudflare for connecting these amazing technolgies to showcase, how easy it is to deploy our own
